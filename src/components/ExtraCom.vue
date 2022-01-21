@@ -111,7 +111,7 @@
         <v-dialog v-model="dialogRelatives" max-width="500px">
           <v-card>
             <v-card-title>
-              <span class="text-h5">{{ formTitle }}</span>
+              <span class="text-h5">{{ relativeTitle }}</span>
             </v-card-title>
 
             <v-card-text>
@@ -305,6 +305,11 @@ export default {
   computed: {
     formTitle() {
       return this.editedIndex === -1 ? "Yangi Hodim" : "Hodimni o`zgartirish";
+    },
+    relativeTitle() {
+      return this.editedIndex === -1
+        ? "Yangi Qarindosh"
+        : "Qarindoshni o`zgartirish";
     },
   },
   watch: {
