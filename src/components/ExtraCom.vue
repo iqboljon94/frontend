@@ -46,7 +46,6 @@
               <v-card-title>
                 <span class="text-h5">{{ formTitle }}</span>
               </v-card-title>
-
               <v-card-text>
                 <v-container>
                   <v-row>
@@ -307,37 +306,6 @@ export default {
     formTitle() {
       return this.editedIndex === -1 ? "Yangi Hodim" : "Hodimni o`zgartirish";
     },
-    // headers() {
-    //   return [
-    //     {
-    //       text: "Tartib",
-    //       align: "left",
-    //       sortable: false,
-    //       value: "index",
-    //     },
-    //     {
-    //       text: "Ismi",
-    //       align: "left",
-    //       sortable: false,
-    //       value: "name",
-    //       filter: (f) => {
-    //         return (f + "").toLowerCase().includes(this["name"].toLowerCase());
-    //       },
-    //     },
-    //     {
-    //       text: "Familiyasi",
-    //       align: "left",
-    //       sortable: false,
-    //       value: "lastname",
-    //       filter: (f) => {
-    //         return (f + "")
-    //           .toLowerCase()
-    //           .includes(this["lastname"].toLowerCase());
-    //       },
-    //     },
-    //     { text: "Amallar", value: "actions", sortable: false },
-    //   ];
-    // },
   },
   watch: {
     dialog(val) {
