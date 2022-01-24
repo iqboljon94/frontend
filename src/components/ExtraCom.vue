@@ -21,6 +21,9 @@
       @update:page="updatePage"
       @update:items-per-page="updatePerPage"
     >
+      <template v-slot:item.birthday="{ item }">
+        <span>{{ format_date(item.birthday) }}</span>
+      </template>
       <template v-slot:top>
         <v-toolbar flat>
           <v-toolbar-title>Hodimlar ro'yxati</v-toolbar-title>
@@ -58,7 +61,13 @@
                   ></v-text-field
                 >
               </template>
-              <v-date-picker v-model="date" no-title scrollable locale="ru-RU">
+              <v-date-picker
+                v-model="date"
+                range
+                no-title
+                scrollable
+                locale="ru-RU"
+              >
                 <v-spacer></v-spacer>
                 <v-btn
                   text
@@ -109,14 +118,30 @@
                       ></v-text-field>
                     </v-col>
                     <v-col cols="12" sm="12" md="12">
-                      <v-select
-                        v-model="empSelect"
-                        :items="employees"
-                        item-text="lastname"
-                        item-value="lastname"
-                        solo
-                        label="Hodimni tanlang"
-                      ></v-select>
+                      <v-menu
+                        v-model="empBirthday"
+                        :close-on-content-click="false"
+                        :nudge-right="40"
+                        transition="scale-transition"
+                        offset-y
+                        min-width="auto"
+                      >
+                        <template v-slot:activator="{ on, attrs }">
+                          <v-text-field
+                            v-model="editedItem.birthday"
+                            label="Tug'ilgan kun"
+                            prepend-icon="mdi-calendar"
+                            readonly
+                            clearable
+                            v-bind="attrs"
+                            v-on="on"
+                          ></v-text-field>
+                        </template>
+                        <v-date-picker
+                          v-model="editedItem.birthday"
+                          @input="empBirthday = false"
+                        ></v-date-picker>
+                      </v-menu>
                     </v-col>
                   </v-row>
                 </v-container>
@@ -261,6 +286,7 @@
               @keyup.native.enter="getFilter()"
             ></v-text-field>
           </td>
+          <td>Tug'ilgan kun</td>
           <td>Amallar</td>
         </tr>
       </template>
@@ -281,12 +307,14 @@
 </template>
 
 <script>
+import moment from "moment";
 export default {
   name: "ExtraCom",
   data: () => ({
     search: "",
     dialog: false,
     dialogDelete: false,
+    empBirthday: false,
     dialogRelatives: false,
     date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
       .toISOString()
@@ -321,6 +349,12 @@ export default {
         sortable: false,
         value: "lastname",
       },
+      {
+        text: "Tug'ilgan kun",
+        align: "left",
+        sortable: false,
+        value: "birthday",
+      },
       { text: "Amallar", value: "actions", sortable: false },
     ],
     whois: [
@@ -343,11 +377,13 @@ export default {
       id: "",
       name: "",
       lastname: "",
+      birthday: "",
     },
     defaultItem: {
       id: "",
       name: "",
       lastname: "",
+      birthday: "",
     },
   }),
   computed: {
@@ -374,6 +410,11 @@ export default {
   },
 
   methods: {
+    format_date(value) {
+      if (value) {
+        return moment(String(value)).format("DD.MM.YYYY");
+      }
+    },
     editItem(item) {
       this.editedIndex = this.employees.indexOf(item);
       this.editedItem = Object.assign({}, item);
@@ -394,6 +435,7 @@ export default {
     },
     clearDate() {
       this.filter.date = "";
+      this.empBirthday = "";
       this.getFilter();
     },
     getFilter() {
@@ -472,6 +514,7 @@ export default {
             console.log(response);
             this.getList();
             this.clearSelect();
+            this.clearDate();
           });
       }
       this.close();
@@ -523,6 +566,7 @@ export default {
     },
     clearSelect() {
       this.empSelect = 0;
+      this.empBirthday = 0;
     },
   },
 };
