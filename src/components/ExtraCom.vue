@@ -18,7 +18,6 @@
         itemsPerPageOptions: [10, 50, 100],
         showFirstLastPage: true,
       }"
-      height="70vh"
       @update:page="updatePage"
       @update:items-per-page="updatePerPage"
     >
@@ -35,8 +34,53 @@
             dense
             @keyup.native.enter="getFilter()"
           ></v-text-field>
-          <v-spacer></v-spacer>
 
+          <v-spacer></v-spacer>
+          <v-col cols="12" sm="6" md="3">
+            <v-menu
+              ref="dateMenu"
+              :close-on-content-click="false"
+              :return-value.sync="filter.date"
+              transition="scale-transition"
+              offset-y
+              min-width="auto"
+            >
+              <template v-slot:activator="{ on, attrs }">
+                <v-text-field
+                  v-model="filter.date"
+                  label="Kunni tanlang"
+                  prepend-icon="mdi-calendar"
+                  v-bind="attrs"
+                  v-on="on"
+                  clearable
+                  @click:clear="clearDate()"
+                >
+                  ></v-text-field
+                >
+              </template>
+              <v-date-picker v-model="date" no-title scrollable locale="ru-RU">
+                <v-spacer></v-spacer>
+                <v-btn
+                  text
+                  color="primary"
+                  @click="$refs.dateMenu.isActive = false"
+                >
+                  Bekor qilish
+                </v-btn>
+                <v-btn
+                  text
+                  color="primary"
+                  @click="
+                    $refs.dateMenu.save(date);
+                    filter.date = date;
+                    getFilter();
+                  "
+                >
+                  OK
+                </v-btn>
+              </v-date-picker>
+            </v-menu>
+          </v-col>
           <v-btn color="primary" dark class="mb-2" @click="dialog = true">
             <v-icon class="mr-2">mdi-account-multiple-plus </v-icon> Yangi Hodim
             qo'shish
@@ -244,6 +288,9 @@ export default {
     dialog: false,
     dialogDelete: false,
     dialogRelatives: false,
+    date: new Date(Date.now() - new Date().getTimezoneOffset() * 60000)
+      .toISOString()
+      .substr(0, 10),
     empSelect: {},
     loading: false,
     employees: [],
@@ -252,6 +299,7 @@ export default {
       name: "",
       lastname: "",
       content: "",
+      date: "",
     },
     showFilter: false,
     headers: [
@@ -343,6 +391,10 @@ export default {
           this.server_items_length = response.data.employees.total;
           this.loading = false;
         });
+    },
+    clearDate() {
+      this.filter.date = "";
+      this.getFilter();
     },
     getFilter() {
       this.showFilter = true;
