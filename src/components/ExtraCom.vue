@@ -117,7 +117,6 @@
                         required
                       ></v-text-field>
                     </v-col>
-
                     <v-col cols="12" sm="12" md="12">
                       <v-menu
                         v-model="empBirthday"
@@ -309,6 +308,7 @@
 
 <script>
 import moment from "moment";
+
 export default {
   name: "ExtraCom",
   data: () => ({
