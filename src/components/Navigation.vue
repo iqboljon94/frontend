@@ -30,7 +30,7 @@ export default {
         {
           title: "Hodimlar ro'yxati",
           icon: "mdi-account-group",
-          link: "/extra",
+          link: "/",
         },
       ],
     };
